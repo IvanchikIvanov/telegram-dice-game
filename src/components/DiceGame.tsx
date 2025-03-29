@@ -4,6 +4,20 @@ import React, { useEffect } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { motion } from 'framer-motion';
 
+interface TelegramWebApp {
+  ready: () => void;
+  expand: () => void;
+  MainButton: {
+    setParams: (params: { text: string; color: string }) => void;
+  };
+}
+
+interface WindowWithTelegram extends Window {
+  Telegram?: {
+    WebApp?: TelegramWebApp;
+  };
+}
+
 const DiceGame: React.FC = () => {
   const {
     balance,
@@ -23,7 +37,9 @@ const DiceGame: React.FC = () => {
   useEffect(() => {
     // Инициализация Telegram Mini App
     if (typeof window !== 'undefined') {
-      const WebApp = (window as any).Telegram?.WebApp;
+      const telegram = (window as unknown as WindowWithTelegram).Telegram;
+      const WebApp = telegram?.WebApp;
+      
       if (WebApp) {
         WebApp.ready();
         WebApp.expand();
